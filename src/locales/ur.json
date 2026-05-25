@@ -1,0 +1,69 @@
+{
+  "common": {
+    "save": "محفوظ کریں",
+    "cancel": "منسوخ کریں",
+    "delete": "ختم کریں",
+    "search": "تلاش کریں...",
+    "loading": "لوڈنگ...",
+    "total": "کل",
+    "amount": "رقم",
+    "date": "تاریخ",
+    "description": "تفصیل",
+    "category": "کیٹیگری"
+  },
+  "home": {
+    "khata": "کھاتہ",
+    "payments": "ادائیگیاں",
+    "cash_in_hand": "کل کیش",
+    "net_balance": "باقی بیلنس",
+    "reports": "بزنس رپورٹس",
+    "reports_sub": "منافع اور نقصان دیکھیں"
+  },
+  "ledger": {
+    "title": "کسٹمر لیجر",
+    "you_give": "آپ دیں گے",
+    "you_get": "آپ لیں گے",
+    "add_customer": "کسٹمر شامل کریں",
+    "receive": "وصول",
+    "pay": "ادائیگی"
+  },
+  "cashbook": {
+    "title": "کیش بک",
+    "cash_in": "کیش ان",
+    "cash_out": "کیش آؤٹ",
+    "today_balance": "آج کا بیلنس"
+  },
+  "stock": {
+    "title": "انوینٹری",
+    "total_items": "کل اشیاء",
+    "stock_value": "سٹاک کی مالیت",
+    "add_item": "آئٹم شامل کریں",
+    "low_stock": "کم سٹاک"
+  },
+  "staff": {
+    "title": "اسٹاف مینجمنٹ",
+    "attendance": "حاضری",
+    "payroll": "تنخواہ",
+    "present": "حاضر",
+    "absent": "غیر حاضر",
+    "add_staff": "اسٹاف شامل کریں",
+    "pay_salary": "تنخواہ دیں"
+  },
+  "bills": {
+    "title": "ڈیجیٹل بلنگ",
+    "create_bill": "بل بنائیں",
+    "total_sales": "کل سیلز",
+    "pending": "باقی بل"
+  },
+  "settings": {
+    "title": "سیٹنگز",
+    "business_profile": "بزنس پروفائل",
+    "general": "جنرل سیٹنگز",
+    "backup": "سیکیورٹی اور بیک اپ",
+    "help": "ہیلپ سینٹر",
+    "logout": "لاگ آؤٹ",
+    "language": "زبان",
+    "theme": "تھیم",
+    "dark_mode": "ڈارک موڈ"
+  }
+}

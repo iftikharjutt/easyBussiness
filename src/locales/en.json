@@ -1,0 +1,69 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "search": "Search...",
+    "loading": "Loading...",
+    "total": "Total",
+    "amount": "Amount",
+    "date": "Date",
+    "description": "Description",
+    "category": "Category"
+  },
+  "home": {
+    "khata": "KHATA",
+    "payments": "PAYMENTS",
+    "cash_in_hand": "Cash In Hand",
+    "net_balance": "Net Balance",
+    "reports": "Business Reports",
+    "reports_sub": "View profit, loss & analytics"
+  },
+  "ledger": {
+    "title": "Customer Ledger",
+    "you_give": "You will give",
+    "you_get": "You will get",
+    "add_customer": "ADD CUSTOMER",
+    "receive": "Receive",
+    "pay": "Pay"
+  },
+  "cashbook": {
+    "title": "Cashbook",
+    "cash_in": "CASH IN",
+    "cash_out": "CASH OUT",
+    "today_balance": "Today's Balance"
+  },
+  "stock": {
+    "title": "Inventory",
+    "total_items": "Total Items",
+    "stock_value": "Stock Value",
+    "add_item": "ADD ITEM",
+    "low_stock": "Low Stock"
+  },
+  "staff": {
+    "title": "Staff Management",
+    "attendance": "Attendance",
+    "payroll": "Payroll",
+    "present": "Present",
+    "absent": "Absent",
+    "add_staff": "ADD STAFF",
+    "pay_salary": "Pay Salary"
+  },
+  "bills": {
+    "title": "Digital Billing",
+    "create_bill": "CREATE BILL",
+    "total_sales": "Total Sales",
+    "pending": "Pending Bills"
+  },
+  "settings": {
+    "title": "Settings",
+    "business_profile": "Business Profile",
+    "general": "General Settings",
+    "backup": "Privacy & Security",
+    "help": "Help Center",
+    "logout": "Logout",
+    "language": "Language",
+    "theme": "Theme",
+    "dark_mode": "Dark Mode"
+  }
+}
