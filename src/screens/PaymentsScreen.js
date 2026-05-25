@@ -1,33 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Share } from 'react-native';
 import { Share2, Download, QrCode } from 'lucide-react-native';
-import { db } from '../config/firebase';
+import { db, auth } from '../config/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 
 export default function PaymentsScreen() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const user = auth.currentUser;
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(doc(db, 'settings', 'business_profile'), (doc) => {
+    if (!user) return;
+    const unsubscribe = onSnapshot(doc(db, 'users', user.uid, 'settings', 'business_profile'), (doc) => {
       if (doc.exists()) {
         setProfile(doc.data());
       }
       setLoading(false);
     });
     return unsubscribe;
-  }, []);
+  }, [user?.uid]);
 
   const qrData = profile 
-    ? `Business: ${profile.businessName}\nPhone: ${profile.phone}\nAccount: MyKhataPay`
-    : 'MyKhataPaymentGateway';
+    ? `Business: ${profile.businessName}\nPhone: ${profile.phone}\nAccount: easyBussinessPay`
+    : 'easyBussinessPaymentGateway';
 
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrData)}`;
 
   const onShare = async () => {
     try {
       await Share.share({
-        message: `Pay to ${profile?.businessName || 'My Business'} using MyKhata App.\nScan QR Code: ${qrUrl}`,
+        message: `Pay to ${profile?.businessName || 'My Business'} using easyBussiness App.\nScan QR Code: ${qrUrl}`,
       });
     } catch (error) {
       alert(error.message);
