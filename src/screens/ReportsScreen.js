@@ -15,7 +15,7 @@ export default function ReportsScreen() {
   const expenses = useFirestore('expenses');
   const bills = useFirestore('bills');
   const stock = useFirestore('stock');
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
   
   const [preferences, setPreferences] = useState({ reportTheme: 'Default' });
 

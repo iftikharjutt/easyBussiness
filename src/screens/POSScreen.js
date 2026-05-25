@@ -87,7 +87,7 @@ export default function POSScreen({ navigation }) {
       const billId = await addDocToDb('bills', billData);
 
       for (const item of Object.values(cart)) {
-        const stockRef = doc(db, 'users', auth.currentUser.uid, 'stock', item.id);
+        const stockRef = doc(db, 'users', auth.currentUser?.uid || 'guest_user', 'stock', item.id);
         await updateDoc(stockRef, { quantity: increment(-item.cartQty) });
         
         await addDocToDb('stock_history', {
@@ -101,7 +101,7 @@ export default function POSScreen({ navigation }) {
       }
 
       if (paymentType === 'credit' && selectedCustomer) {
-        const customerRef = doc(db, 'users', auth.currentUser.uid, 'customers', selectedCustomer.id);
+        const customerRef = doc(db, 'users', auth.currentUser?.uid || 'guest_user', 'customers', selectedCustomer.id);
         await updateDoc(customerRef, { balance: increment(total) });
         await addDocToDb('customer_transactions', {
           customerId: selectedCustomer.id,

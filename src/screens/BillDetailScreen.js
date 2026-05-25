@@ -10,7 +10,7 @@ export default function BillDetailScreen({ route, navigation }) {
   const { bill } = route.params;
   const [business, setBusiness] = useState(null);
   const [preferences, setPreferences] = useState({ invoiceTheme: 'Modern' });
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   useEffect(() => {
     if (user) fetchData();

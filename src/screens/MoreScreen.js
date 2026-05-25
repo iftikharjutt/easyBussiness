@@ -43,7 +43,7 @@ export default function MoreScreen() {
   const { colors, isDarkMode } = useTheme();
   const { t } = useTranslation();
   const [profile, setProfile] = useState({ businessName: 'Your Business', ownerName: 'User' });
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   useEffect(() => {
     if (!user) return;
@@ -114,17 +114,6 @@ export default function MoreScreen() {
             title={t('settings.help')} 
             subtitle="FAQs, Contact Support" 
             onPress={() => navigation.navigate('HelpCenter')}
-          />
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <View style={[styles.card, { backgroundColor: colors.card }]}>
-          <MenuItem 
-            icon={LogOut} 
-            title={t('settings.logout')} 
-            color="#ef4444" 
-            onPress={handleLogout}
           />
         </View>
       </View>

@@ -11,7 +11,7 @@ export default function CustomerDetailScreen({ route, navigation }) {
   const [type, setType] = useState('got');
   const [amount, setAmount] = useState('');
   const [desc, setDesc] = useState('');
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   React.useEffect(() => {
     if (!user) return;

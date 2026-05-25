@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 export default function GeneralSettingsScreen({ navigation }) {
   const { colors, isDarkMode, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation();
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
   
   const [settings, setSettings] = useState({
     currency: 'PKR (Rs)',

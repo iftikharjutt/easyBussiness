@@ -4,14 +4,11 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Home, ArrowLeftRight, MoreHorizontal, BarChart3 } from 'lucide-react-native';
-import { auth } from './src/config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import './src/config/i18n';
 import { useTranslation } from 'react-i18next';
 
 // Import Screens
-import AuthScreen from './src/screens/AuthScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import LedgerScreen from './src/screens/LedgerScreen';
 import CustomerDetailScreen from './src/screens/CustomerDetailScreen';
@@ -68,49 +65,32 @@ function HomeStack() {
 }
 
 function NavigationRoot() {
-  const [user, setUser] = useState(null);
-  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState({ uid: 'default_user', email: 'guest@easybussiness.com' });
   const { isDarkMode, colors } = useTheme();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      if (initializing) setInitializing(false);
-    });
-    return unsubscribe;
-  }, []);
-
-  if (initializing) return null;
-
   return (
     <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
-      {!user ? (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Auth" component={AuthScreen} />
-        </Stack.Navigator>
-      ) : (
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarActiveTintColor: colors.primary,
-            tabBarInactiveTintColor: 'gray',
-            tabBarLabelStyle: { fontSize: 12, fontWeight: '500' },
-            tabBarStyle: { height: 60, paddingBottom: 10, backgroundColor: colors.card },
-            tabBarIcon: ({ color, size }) => {
-              if (route.name === 'Home') return <Home color={color} size={size} />;
-              if (route.name === 'ReportsTab') return <BarChart3 color={color} size={size} />;
-              if (route.name === 'Payments') return <ArrowLeftRight color={color} size={size} />;
-              if (route.name === 'More') return <MoreHorizontal color={color} size={size} />;
-            },
-          })}
-        >
-          <Tab.Screen name="Home" component={HomeStack} options={{ tabBarLabel: t('home.khata') }} />
-          <Tab.Screen name="ReportsTab" component={ReportsScreen} options={{ title: t('home.reports'), tabBarLabel: 'Reports' }} />
-          <Tab.Screen name="Payments" component={PaymentsScreen} options={{ tabBarLabel: t('home.payments') }} />
-          <Tab.Screen name="More" component={MoreScreen} options={{ tabBarLabel: 'More' }} />
-        </Tab.Navigator>
-      )}
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: 'gray',
+          tabBarLabelStyle: { fontSize: 12, fontWeight: '500' },
+          tabBarStyle: { height: 60, paddingBottom: 10, backgroundColor: colors.card },
+          tabBarIcon: ({ color, size }) => {
+            if (route.name === 'Home') return <Home color={color} size={size} />;
+            if (route.name === 'ReportsTab') return <BarChart3 color={color} size={size} />;
+            if (route.name === 'Payments') return <ArrowLeftRight color={color} size={size} />;
+            if (route.name === 'More') return <MoreHorizontal color={color} size={size} />;
+          },
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeStack} options={{ tabBarLabel: t('home.khata') }} />
+        <Tab.Screen name="ReportsTab" component={ReportsScreen} options={{ title: t('home.reports'), tabBarLabel: 'Reports' }} />
+        <Tab.Screen name="Payments" component={PaymentsScreen} options={{ tabBarLabel: t('home.payments') }} />
+        <Tab.Screen name="More" component={MoreScreen} options={{ tabBarLabel: 'More' }} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

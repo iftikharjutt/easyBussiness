@@ -7,7 +7,7 @@ import { Store, Phone, MapPin, Mail, Save, ChevronLeft } from 'lucide-react-nati
 export default function BusinessProfileScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   const [profile, setProfile] = useState({
     businessName: '',

@@ -11,7 +11,7 @@ export default function StaffScreen() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [dailyAttendance, setDailyAttendance] = useState({});
   const [payrollData, setPayrollData] = useState({});
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   const [name, setName] = useState('');
   const [salary, setSalary] = useState('');

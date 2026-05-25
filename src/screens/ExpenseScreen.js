@@ -53,7 +53,7 @@ export default function ExpenseScreen() {
     try {
       let imageUrl = null;
       if (image) {
-        const path = `users/${auth.currentUser.uid}/receipts/${Date.now()}.jpg`;
+        const path = `users/${auth.currentUser?.uid || 'guest_user'}/receipts/${Date.now()}.jpg`;
         imageUrl = await uploadImage(image, path);
       }
       await addDocToDb('expenses', {
@@ -74,7 +74,7 @@ export default function ExpenseScreen() {
     Alert.alert("Delete Expense", "Remove this record?", [
       { text: "Cancel" },
       { text: "Delete", style: 'destructive', onPress: async () => {
-        await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'expenses', id));
+        await deleteDoc(doc(db, 'users', auth.currentUser?.uid || 'guest_user', 'expenses', id));
       }}
     ]);
   };

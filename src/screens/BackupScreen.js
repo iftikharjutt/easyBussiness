@@ -7,7 +7,7 @@ import { ChevronLeft, CloudSync, ShieldCheck, RefreshCcw, CheckCircle2, History 
 export default function BackupScreen({ navigation }) {
   const [syncing, setSyncing] = useState(false);
   const [lastSync, setLastSync] = useState('Never');
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   useEffect(() => {
     if (user) fetchSyncInfo();

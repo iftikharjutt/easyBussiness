@@ -35,7 +35,7 @@ export const storage = getStorage(app);
 // --- User-Scoped Firestore Hook ---
 export const useFirestore = (collectionName) => {
   const [data, setData] = useState([]);
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   useEffect(() => {
     if (!user) {
@@ -67,11 +67,7 @@ export const useFirestore = (collectionName) => {
 
 // --- User-Scoped Add Document Helper ---
 export const addDocToDb = async (collectionName, payload) => {
-  const user = auth.currentUser;
-  if (!user) {
-    Alert.alert("Auth Error", "You must be logged in to save data.");
-    throw new Error("User not authenticated");
-  }
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   try {
     const docRef = await addDoc(collection(db, 'users', user.uid, collectionName), {

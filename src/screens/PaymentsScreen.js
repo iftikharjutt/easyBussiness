@@ -7,7 +7,7 @@ import { doc, onSnapshot } from 'firebase/firestore';
 export default function PaymentsScreen() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user = auth.currentUser;
+  const user = auth.currentUser || { uid: 'guest_user' };
 
   useEffect(() => {
     if (!user) return;
