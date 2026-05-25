@@ -36,35 +36,45 @@ export default function StaffScreen() {
   useEffect(() => {
     if (tab !== 'payroll' || !user) return;
     const fetchMonthlyStats = async () => {
-      const stats = {};
-      const date = new Date();
-      const monthStr = date.toLocaleDateString('en-CA').slice(0, 7);
-      const q = query(
-        collection(db, 'users', user.uid, 'attendance'), 
-        where('date', '>=', `${monthStr}-01`)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (!stats[data.staffId]) stats[data.staffId] = { present: 0, absent: 0 };
-        if (data.status === 'P') stats[data.staffId].present += 1;
-        else stats[data.staffId].absent += 1;
-      });
-      setPayrollData(stats);
+      try {
+        const stats = {};
+        const date = new Date();
+        const monthStr = date.toLocaleDateString('en-CA').slice(0, 7);
+        const q = query(
+          collection(db, 'users', user.uid, 'attendance'), 
+          where('date', '>=', `${monthStr}-01`)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (!stats[data.staffId]) stats[data.staffId] = { present: 0, absent: 0 };
+          if (data.status === 'P') stats[data.staffId].present += 1;
+          else stats[data.staffId].absent += 1;
+        });
+        setPayrollData(stats);
+      } catch (e) {
+        console.error(e, 'fetchMonthlyStats');
+        Alert.alert('Error', 'An error occurred while fetching monthly stats: ' + e.message);
+      }
     };
     fetchMonthlyStats();
   }, [tab, staff, user?.uid]);
 
   const handleMarkAttendance = async (staffId, status) => {
-    if (!user) return;
-    const dateStr = currentDate.toLocaleDateString('en-CA');
-    const attendanceId = `${staffId}_${dateStr}`;
-    await setDoc(doc(db, 'users', user.uid, 'attendance', attendanceId), {
-      staffId,
-      date: dateStr,
-      status,
-      timestamp: new Date()
-    });
+    try {
+      if (!user) return;
+      const dateStr = currentDate.toLocaleDateString('en-CA');
+      const attendanceId = `${staffId}_${dateStr}`;
+      await setDoc(doc(db, 'users', user.uid, 'attendance', attendanceId), {
+        staffId,
+        date: dateStr,
+        status,
+        timestamp: new Date()
+      });
+    } catch (e) {
+      console.error(e, 'handleMarkAttendance');
+      Alert.alert('Error', 'An error occurred while marking attendance: ' + e.message);
+    }
   };
 ...
   const [name, setName] = useState('');

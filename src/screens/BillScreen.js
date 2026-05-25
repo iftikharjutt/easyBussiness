@@ -23,35 +23,50 @@ export default function BillScreen({ navigation }) {
   }, [bills, searchQuery]);
 
   const handleCreateBill = async () => {
-    if (!customer || !totalAmount) return;
-    const billData = {
-      customerName: customer,
-      itemsSummary: items,
-      total: parseFloat(totalAmount),
-      billNo: `INV-${Date.now().toString().slice(-6)}`,
-      date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }),
-      status: 'unpaid',
-      timestamp: new Date()
-    };
-    await addDocToDb('bills', billData);
-    setCustomer(''); setItems(''); setTotalAmount('');
-    setModalVisible(false);
+    try {
+      if (!customer || !totalAmount) return;
+      const billData = {
+        customerName: customer,
+        itemsSummary: items,
+        total: parseFloat(totalAmount),
+        billNo: `INV-${Date.now().toString().slice(-6)}`,
+        date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }),
+        status: 'unpaid',
+        timestamp: new Date()
+      };
+      await addDocToDb('bills', billData);
+      setCustomer(''); setItems(''); setTotalAmount('');
+      setModalVisible(false);
+    } catch (e) {
+      console.error(e, 'handleCreateBill');
+      Alert.alert('Error', 'An error occurred while creating bill: ' + e.message);
+    }
   };
 
   const handleDeleteBill = (id) => {
     Alert.alert("Delete Bill", "Are you sure you want to delete this invoice?", [
       { text: "Cancel" },
       { text: "Delete", style: 'destructive', onPress: async () => {
-        await deleteDoc(doc(db, 'bills', id));
+        try {
+          await deleteDoc(doc(db, 'bills', id));
+        } catch (e) {
+          console.error(e, 'handleDeleteBill');
+          Alert.alert('Error', 'An error occurred while deleting bill: ' + e.message);
+        }
       }}
     ]);
   };
 
   const toggleBillStatus = async (id, currentStatus) => {
-    const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
-    await updateDoc(doc(db, 'bills', id), {
-      status: newStatus
-    });
+    try {
+      const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
+      await updateDoc(doc(db, 'bills', id), {
+        status: newStatus
+      });
+    } catch (e) {
+      console.error(e, 'toggleBillStatus');
+      Alert.alert('Error', 'An error occurred while updating bill status: ' + e.message);
+    }
   };
 
   return (

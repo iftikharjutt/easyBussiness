@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Modal, Alert } from 'react-native';
 import { Search, UserPlus, EyeOff, X } from 'lucide-react-native';
 import { useFirestore, addDocToDb } from '../config/firebase';
 import { useTheme } from '../context/ThemeContext';
@@ -23,10 +23,15 @@ export default function LedgerScreen({ navigation }) {
   }, [customers, searchQuery]);
 
   const handleAddCustomer = async () => {
-    if (!name) return;
-    await addDocToDb('customers', { name, phone, balance: 0 });
-    setName(''); setPhone('');
-    setModalVisible(false);
+    try {
+      if (!name) return;
+      await addDocToDb('customers', { name, phone, balance: 0 });
+      setName(''); setPhone('');
+      setModalVisible(false);
+    } catch (e) {
+      console.error("Error in handleAddCustomer:", e);
+      Alert.alert("Error", "Failed to add customer. " + e.message);
+    }
   };
 
   const calculateTotals = () => {

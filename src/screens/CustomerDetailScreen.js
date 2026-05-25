@@ -27,26 +27,31 @@ export default function CustomerDetailScreen({ route, navigation }) {
   }, [customerId, user?.uid]);
 
   const handleAddEntry = async () => {
-    if (!amount || !user) return;
-    const amt = parseFloat(amount);
-    
-    await addDocToDb('customer_transactions', {
-      customerId,
-      amount: amt,
-      description: desc,
-      type,
-      date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' })
-    });
+    try {
+      if (!amount || !user) return;
+      const amt = parseFloat(amount);
+      
+      await addDocToDb('customer_transactions', {
+        customerId,
+        amount: amt,
+        description: desc,
+        type,
+        date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' })
+      });
 
-    const balanceChange = type === 'gave' ? amt : -amt;
-    const customerRef = doc(db, 'users', user.uid, 'customers', customerId);
-    await updateDoc(customerRef, {
-      balance: increment(balanceChange)
-    });
+      const balanceChange = type === 'gave' ? amt : -amt;
+      const customerRef = doc(db, 'users', user.uid, 'customers', customerId);
+      await updateDoc(customerRef, {
+        balance: increment(balanceChange)
+      });
 
-    setAmount('');
-    setDesc('');
-    setModalVisible(false);
+      setAmount('');
+      setDesc('');
+      setModalVisible(false);
+    } catch (e) {
+      console.error(e, 'handleAddEntry');
+      Alert.alert('Error', 'An error occurred while adding entry: ' + e.message);
+    }
   };
 
   const handleDeleteTransaction = (transaction) => {
@@ -54,10 +59,15 @@ export default function CustomerDetailScreen({ route, navigation }) {
     Alert.alert("Delete Entry", "Are you sure? This will adjust the customer balance.", [
       { text: "Cancel" },
       { text: "Delete", style: 'destructive', onPress: async () => {
-        await deleteDoc(doc(db, 'users', user.uid, 'customer_transactions', transaction.id));
-        const balanceCorrection = transaction.type === 'gave' ? -transaction.amount : transaction.amount;
-        const customerRef = doc(db, 'users', user.uid, 'customers', customerId);
-        await updateDoc(customerRef, { balance: increment(balanceCorrection) });
+        try {
+          await deleteDoc(doc(db, 'users', user.uid, 'customer_transactions', transaction.id));
+          const balanceCorrection = transaction.type === 'gave' ? -transaction.amount : transaction.amount;
+          const customerRef = doc(db, 'users', user.uid, 'customers', customerId);
+          await updateDoc(customerRef, { balance: increment(balanceCorrection) });
+        } catch (e) {
+          console.error(e, 'handleDeleteTransaction');
+          Alert.alert('Error', 'An error occurred while deleting transaction: ' + e.message);
+        }
       }}
     ]);
   };

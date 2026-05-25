@@ -35,7 +35,10 @@ export default function GeneralSettingsScreen({ navigation }) {
         const data = docSnap.data();
         setSettings({ ...settings, ...data, darkMode: isDarkMode });
       }
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error("Fetch Settings Error:", e);
+      Alert.alert("Error", "Failed to load preferences.");
+    }
   };
 
   const updateSetting = async (key, value) => {
@@ -44,13 +47,21 @@ export default function GeneralSettingsScreen({ navigation }) {
     if (!user) return;
     try {
       await setDoc(doc(db, 'users', user.uid, 'settings', 'app_preferences'), newSettings);
-    } catch (e) { Alert.alert("Error", "Failed to update preference."); }
+    } catch (e) {
+      console.error("Update Setting Error:", e);
+      Alert.alert("Error", "Failed to update preference: " + e.message);
+    }
   };
 
   const changeLanguage = (langCode, label) => {
-    i18n.changeLanguage(langCode);
-    updateSetting('language', label);
-    setModalVisible(false);
+    try {
+      i18n.changeLanguage(langCode);
+      updateSetting('language', label);
+      setModalVisible(false);
+    } catch (e) {
+      console.error("Change Language Error:", e);
+      Alert.alert("Error", "Failed to change language.");
+    }
   };
 
   const ThemeOption = ({ label, current, onSelect }) => (
@@ -145,12 +156,11 @@ export default function GeneralSettingsScreen({ navigation }) {
         </View>
 
         <View style={styles.footer}>
-           <Text style={[styles.footerText, { color: colors.textSecondary }]}>MyKhata App - v1.0.0</Text>
+           <Text style={[styles.footerText, { color: colors.textSecondary }]}>easyBussiness App - v1.0.0</Text>
         </View>
         <View style={{ height: 40 }} />
       </ScrollView>
 
-      {/* Language Modal */}
       <Modal visible={langModalVisible} animationType="slide" transparent={true}>
          <View style={styles.modalOverlay}>
             <View style={[styles.modalContent, { backgroundColor: colors.card }]}>

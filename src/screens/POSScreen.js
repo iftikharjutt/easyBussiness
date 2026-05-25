@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, Modal } from 'react-native';
-import { useFirestore, addDocToDb, db } from '../config/firebase';
-import { doc, updateDoc, increment } from 'firebase/firestore';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, Modal, ScrollView } from 'react-native';
+import { useFirestore, addDocToDb, db, auth } from '../config/firebase';
+import { doc, updateDoc, increment, collection, query, where, getDocs } from 'firebase/firestore';
 import { ShoppingCart, Search, Plus, Minus, X, CheckCircle2, User, CreditCard, Banknote, Filter } from 'lucide-react-native';
 
 export default function POSScreen({ navigation }) {
@@ -16,13 +16,11 @@ export default function POSScreen({ navigation }) {
   const [paymentType, setPaymentType] = useState('cash');
   const [custSearch, setCustSearch] = useState('');
 
-  // Extract unique categories from stock
   const categories = useMemo(() => {
     const cats = ['All', ...new Set(stockItems.map(item => item.category || 'General'))];
     return cats;
   }, [stockItems]);
 
-  // Filter products based on category and search
   const filteredStock = useMemo(() => {
     return stockItems.filter(item => {
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -117,8 +115,8 @@ export default function POSScreen({ navigation }) {
 
       navigation.replace('BillDetail', { bill: { ...billData, id: billId } });
     } catch (e) {
-      console.error(e);
-      Alert.alert("Error", "Failed to process sale.");
+      console.error("Checkout Error:", e);
+      Alert.alert("Checkout Failed", "Failed to process sale. Error: " + e.message);
     }
   };
 

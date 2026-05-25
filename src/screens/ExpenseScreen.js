@@ -21,25 +21,35 @@ export default function ExpenseScreen() {
   }, [expenses, searchQuery]);
 
   const handleAddExpense = async () => {
-    if (!amount) return;
-    await addDocToDb('expenses', {
-      amount: parseFloat(amount),
-      category: category || 'General',
-      description: desc,
-      date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short' }),
-      timestamp: new Date()
-    });
-    setAmount('');
-    setCategory('');
-    setDesc('');
-    setModalVisible(false);
+    try {
+      if (!amount) return;
+      await addDocToDb('expenses', {
+        amount: parseFloat(amount),
+        category: category || 'General',
+        description: desc,
+        date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short' }),
+        timestamp: new Date()
+      });
+      setAmount('');
+      setCategory('');
+      setDesc('');
+      setModalVisible(false);
+    } catch (e) {
+      console.error(e, 'handleAddExpense');
+      Alert.alert('Error', 'An error occurred while adding expense: ' + e.message);
+    }
   };
 
   const handleDeleteExpense = (id) => {
     Alert.alert("Delete Expense", "Remove this record from your history?", [
       { text: "Cancel" },
       { text: "Delete", style: 'destructive', onPress: async () => {
-        await deleteDoc(doc(db, 'expenses', id));
+        try {
+          await deleteDoc(doc(db, 'expenses', id));
+        } catch (e) {
+          console.error(e, 'handleDeleteExpense');
+          Alert.alert('Error', 'An error occurred while deleting expense: ' + e.message);
+        }
       }}
     ]);
   };

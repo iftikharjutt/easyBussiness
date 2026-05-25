@@ -1,43 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
-import { db } from '../config/firebase';
+import { db, auth } from '../config/firebase';
 import { doc, getDoc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { ChevronLeft, CloudSync, ShieldCheck, RefreshCcw, CheckCircle2, History } from 'lucide-react-native';
 
 export default function BackupScreen({ navigation }) {
   const [syncing, setSyncing] = useState(false);
   const [lastSync, setLastSync] = useState('Never');
+  const user = auth.currentUser;
 
   useEffect(() => {
-    fetchSyncInfo();
-  }, []);
+    if (user) fetchSyncInfo();
+  }, [user?.uid]);
 
   const fetchSyncInfo = async () => {
     try {
-      const docRef = doc(db, 'settings', 'sync_info');
+      const docRef = doc(db, 'users', user.uid, 'settings', 'sync_info');
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const date = docSnap.data().lastSync.toDate();
         setLastSync(date.toLocaleString());
       }
     } catch (e) {
-      console.error(e);
+      console.error("Fetch Sync Info Error:", e);
     }
   };
 
   const handleManualSync = async () => {
+    if (!user) return;
     setSyncing(true);
     try {
-      // Simulate data aggregation
       const collections = ['customers', 'transactions', 'stock', 'bills', 'expenses', 'staff'];
       let totalRecords = 0;
       
       for (const col of collections) {
-        const snap = await getDocs(collection(db, col));
+        const snap = await getDocs(collection(db, 'users', user.uid, col));
         totalRecords += snap.size;
       }
 
-      await setDoc(doc(db, 'settings', 'sync_info'), {
+      await setDoc(doc(db, 'users', user.uid, 'settings', 'sync_info'), {
         lastSync: new Date(),
         totalRecords: totalRecords
       });
@@ -45,7 +46,8 @@ export default function BackupScreen({ navigation }) {
       setLastSync(new Date().toLocaleString());
       Alert.alert("Sync Successful", `All ${totalRecords} records are securely backed up to the cloud.`);
     } catch (e) {
-      Alert.alert("Sync Failed", "Please check your internet connection.");
+      console.error("Manual Sync Error:", e);
+      Alert.alert("Sync Failed", "Please check your internet connection and try again.");
     } finally {
       setSyncing(false);
     }

@@ -22,17 +22,22 @@ export default function StockScreen({ navigation }) {
   }, [stockItems, searchQuery]);
 
   const handleAddItem = async () => {
-    if (!name || !salePrice) return;
-    await addDocToDb('stock', {
-      name,
-      category,
-      unit,
-      purchasePrice: parseFloat(purchasePrice) || 0,
-      salePrice: parseFloat(salePrice) || 0,
-      quantity: 0
-    });
-    setName(''); setCategory(''); setUnit(''); setPurchasePrice(''); setSalePrice('');
-    setModalVisible(false);
+    try {
+      if (!name || !salePrice) return;
+      await addDocToDb('stock', {
+        name,
+        category,
+        unit,
+        purchasePrice: parseFloat(purchasePrice) || 0,
+        salePrice: parseFloat(salePrice) || 0,
+        quantity: 0
+      });
+      setName(''); setCategory(''); setUnit(''); setPurchasePrice(''); setSalePrice('');
+      setModalVisible(false);
+    } catch (e) {
+      console.error("Error in handleAddItem:", e);
+      Alert.alert("Error", "Failed to add item. " + e.message);
+    }
   };
 
   const handleAdjustStock = async () => {
@@ -62,7 +67,8 @@ export default function StockScreen({ navigation }) {
       setSelectedItem(null);
       setAdjustModalVisible(false);
     } catch (e) {
-      Alert.alert("Error", "Failed to update stock.");
+      console.error("Error in handleAdjustStock:", e);
+      Alert.alert("Error", "Failed to update stock. " + e.message);
     }
   };
 
@@ -70,7 +76,12 @@ export default function StockScreen({ navigation }) {
     Alert.alert("Delete Item", "Are you sure? This will remove the item permanently.", [
       { text: "Cancel" },
       { text: "Delete", style: 'destructive', onPress: async () => {
-        await deleteDoc(doc(db, 'stock', id));
+        try {
+          await deleteDoc(doc(db, 'stock', id));
+        } catch (e) {
+          console.error("Error in handleDeleteItem:", e);
+          Alert.alert("Error", "Failed to delete item. " + e.message);
+        }
       }}
     ]);
   };

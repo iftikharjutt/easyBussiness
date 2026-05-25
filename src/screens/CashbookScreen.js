@@ -21,24 +21,34 @@ export default function CashbookScreen() {
   }, [transactions, searchQuery]);
 
   const handleAddTransaction = async () => {
-    if (!amount) return;
-    await addDocToDb('transactions', {
-      type,
-      amount: parseFloat(amount),
-      description: desc,
-      date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short' }),
-      timestamp: new Date()
-    });
-    setAmount('');
-    setDesc('');
-    setModalVisible(false);
+    try {
+      if (!amount) return;
+      await addDocToDb('transactions', {
+        type,
+        amount: parseFloat(amount),
+        description: desc,
+        date: new Date().toLocaleDateString('en-PK', { day: '2-digit', month: 'short' }),
+        timestamp: new Date()
+      });
+      setAmount('');
+      setDesc('');
+      setModalVisible(false);
+    } catch (e) {
+      console.error("Error in handleAddTransaction:", e);
+      Alert.alert("Error", "Failed to add transaction. " + e.message);
+    }
   };
 
   const handleDeleteEntry = (id) => {
     Alert.alert("Delete Entry", "Are you sure you want to remove this transaction?", [
       { text: "Cancel" },
       { text: "Delete", style: 'destructive', onPress: async () => {
-        await deleteDoc(doc(db, 'transactions', id));
+        try {
+          await deleteDoc(doc(db, 'transactions', id));
+        } catch (e) {
+          console.error("Error in handleDeleteEntry:", e);
+          Alert.alert("Error", "Failed to delete transaction. " + e.message);
+        }
       }}
     ]);
   };

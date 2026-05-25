@@ -30,7 +30,8 @@ export default function BusinessProfileScreen({ navigation }) {
         setProfile(docSnap.data());
       }
     } catch (e) {
-      console.error(e);
+      console.error("Fetch Profile Error:", e);
+      Alert.alert("Error", "Failed to load business profile.");
     } finally {
       setLoading(false);
     }
@@ -38,7 +39,7 @@ export default function BusinessProfileScreen({ navigation }) {
 
   const handleSave = async () => {
     if (!profile.businessName) {
-      Alert.alert("Error", "Business name is required.");
+      Alert.alert("Input Error", "Business name is required.");
       return;
     }
     if (!user) return;
@@ -49,9 +50,10 @@ export default function BusinessProfileScreen({ navigation }) {
         ...profile,
         updatedAt: new Date()
       });
-      Alert.alert("Success", "Business profile updated!");
+      Alert.alert("Success", "Business profile updated successfully!");
     } catch (e) {
-      Alert.alert("Error", "Failed to save profile.");
+      console.error("Save Profile Error:", e);
+      Alert.alert("Save Error", "Failed to update business profile. Error: " + e.message);
     } finally {
       setSaving(false);
     }
